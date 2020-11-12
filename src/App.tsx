@@ -1,32 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./App.css";
-import {
-  AnimatedQRCodeV1,
-  AnimatedQRCodeV2,
-} from "./Components/AnimatedQRCode";
-import { V1, V2 } from "@cvbb/qr-protocol/dist";
+import {Encoder} from './Components/Encoder';
+import {Decoder} from "./Components/Decoder";
 
 function App() {
-  const [data, setData] = useState("something");
-  useEffect(() => {
-    if (data.length === 0) {
-      setData("something");
-    }
-  }, [data]);
-  return (
-    <div className="App">
-      <div className="row">
-        <textarea
-          value={data}
-          onChange={(e) => {
-            setData(e.target.value);
-          }}
-          cols={100}
-          rows={20}
-        />
-      </div>
-    </div>
-  );
+  return <div className="App">
+      <p>Encoder</p>
+      <Encoder />
+      <p>Decoder</p>
+      <Decoder />
+  </div>;
 }
 
 export default App;
