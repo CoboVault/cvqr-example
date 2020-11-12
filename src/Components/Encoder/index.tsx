@@ -1,18 +1,23 @@
-import React, {useEffect, useState, Fragment} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import '../../styles/index.scss';
 import {AnimatedQRCodeV2} from '../AnimatedQRCode';
 import {V2} from '@cvbb/qr-protocol/dist';
+import {DataTypeContext} from '../DataTypeSelector';
 
 export const Encoder = () => {
+  const currentDataType = useContext(DataTypeContext);
   const [data, setData] = useState('');
   const [qrData, setQrData] = useState<string[]>([]);
+  console.log(currentDataType);
   useEffect(() => {
     try {
-      setQrData(V2.constructQRCode(data));
+      setQrData(
+        V2.constructQRCode(Buffer.from(data, currentDataType).toString('hex')),
+      );
     } catch (e) {
       setQrData([]);
     }
-  }, [data]);
+  }, [data, currentDataType]);
   return (
     <div className="row">
       <div className="col">

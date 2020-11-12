@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import QrReader from 'react-qr-scanner';
 import '../../styles/index.scss';
 import {extractSingleWorkload} from '@cvbb/bc-ur/dist';
 import {V2} from '@cvbb/qr-protocol/dist';
 
 import {Progress} from './Progress';
+import {DataTypeContext} from '../DataTypeSelector';
 
 export interface URQRCodeData {
   total: number;
@@ -13,6 +14,7 @@ export interface URQRCodeData {
 }
 
 export const Decoder = () => {
+  const currentDataType = useContext(DataTypeContext);
   const [data, setData] = useState('');
   const [urCodes, setURCodes] = useState<URQRCodeData[]>([]);
 
@@ -34,7 +36,12 @@ export const Decoder = () => {
         const newCodes = [...urCodes, {index, total, data: ur}];
         setURCodes(newCodes);
         if (newCodes.length === total) {
-          setData(V2.extractQRCode(newCodes.map((i) => i.data)));
+          setData(
+            Buffer.from(
+              V2.extractQRCode(newCodes.map((i) => i.data)),
+              'hex',
+            ).toString(currentDataType),
+          );
           clear();
         }
       }
@@ -52,7 +59,7 @@ export const Decoder = () => {
       <div className="col">
         <QrReader
           onScan={(data: any) => {
-            if(data){
+            if (data) {
               console.log(data);
               processURQRCode(data);
             }
