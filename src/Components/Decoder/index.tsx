@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import QrReader from 'react-qr-scanner';
 import '../../styles/index.scss';
 import {extractSingleWorkload} from '@cvbb/bc-ur/dist';
@@ -51,25 +51,39 @@ export const Decoder = () => {
     }
   };
 
+  const [decoderIsOpen, setDecoderOpen] = useState(false);
+
+  useEffect(() => {
+    if (!decoderIsOpen) {
+      clear();
+    }
+  }, [decoderIsOpen]);
+
   return (
     <div className="row">
       <div className="col">
         <textarea value={data} onChange={(e) => {}} cols={50} rows={20} />
       </div>
       <div className="col">
-        <QrReader
-          onScan={(data: any) => {
-            if (data) {
-              console.log(data);
-              processURQRCode(data);
-            }
-          }}
-          delay={100}
-          style={{width: 250}}
-          onError={(e) => {
-            console.log(e);
-          }}
-        />
+        <button
+          onClick={() => setDecoderOpen((decoderIsOpen) => !decoderIsOpen)}>
+          {decoderIsOpen ? '关闭解码' : '开启解码'}
+        </button>
+        {decoderIsOpen && (
+          <QrReader
+            onScan={(data: any) => {
+              if (data) {
+                console.log(data);
+                processURQRCode(data);
+              }
+            }}
+            delay={100}
+            style={{width: 250}}
+            onError={(e) => {
+              console.log(e);
+            }}
+          />
+        )}
         {urCodes[0] && urCodes[0].total > 1 && (
           <Progress progress={urCodes.length} total={urCodes[0].total} />
         )}
