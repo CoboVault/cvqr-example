@@ -5,3 +5,5 @@
   padding: 16px;
   justify-content: space-between;
 }
+
+.copyleft { display:inline-block; transform: rotate(180deg); }

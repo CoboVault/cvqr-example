@@ -13,6 +13,11 @@ function App() {
         <p>Decoder</p>
         <Decoder />
       </DataTypeSelector>
+      <div>
+        <span className="copyleft">&copy;</span>
+        <span>Cobo Vault Team</span>
+      </div>
+      <p>Donation: 3Kd5rjiLtvpHv5nhYQNTTeRLgrz4om32PJ</p>
     </div>
   );
 }
