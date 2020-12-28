@@ -6,6 +6,7 @@ import {V2} from '@cvbb/qr-protocol/dist';
 
 import {Progress} from './Progress';
 import {DataTypeContext} from '../DataTypeSelector';
+import {parsePsbt} from "./utils";
 
 export interface URQRCodeData {
   total: number;
@@ -17,6 +18,7 @@ export const Decoder = () => {
   const currentDataType = useContext(DataTypeContext);
   const [data, setData] = useState('');
   const [urCodes, setURCodes] = useState<URQRCodeData[]>([]);
+  const [psbt, setPsbt] = useState('');
 
   const clear = () => {
     setURCodes([]);
@@ -47,7 +49,7 @@ export const Decoder = () => {
       }
     } catch (e) {
       clear();
-      alert('invalid animated QRCode');
+      setData(ur);
     }
   };
 
@@ -59,10 +61,28 @@ export const Decoder = () => {
     }
   }, [decoderIsOpen]);
 
+  const decodePSBT = () => {
+    try {
+      if (data) {
+        const ps = parsePsbt(data);
+        setPsbt(JSON.stringify(ps));
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  };
+
   return (
     <div className="row">
       <div className="col">
         <textarea value={data} onChange={(e) => {}} cols={50} rows={20} />
+        <button
+          onClick={() => {
+            decodePSBT();
+          }}>
+          解析PSBT(Hex)
+        </button>
+        <textarea value={psbt} cols={50} rows={20}/>
       </div>
       <div className="col">
         <button
@@ -73,7 +93,6 @@ export const Decoder = () => {
           <QrReader
             onScan={(data: any) => {
               if (data) {
-                console.log(data);
                 processURQRCode(data);
               }
             }}
